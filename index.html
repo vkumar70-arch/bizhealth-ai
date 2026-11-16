@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="BizHealth AI — Monthly financial wellness for small and microbusiness owners.">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="BizHealth AI">
+  <title>BizHealth AI — Monthly Financial Wellness</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!--
+    BizHealth AI
+    ============
+    All data processing is performed client-side in the browser.
+    No transaction data is transmitted to any server.
+
+    IMPORTANT DISCLAIMERS:
+    - This application does not provide financial, accounting, tax, or legal advice.
+    - AI categorization is rule-based and deterministic; it is not a substitute for
+      professional bookkeeping or accounting.
+    - This application does not make lending or credit decisions.
+    - All suggestions are educational and for consideration only.
+    - Financial figures are derived solely from the user's uploaded data.
+      No figures are invented or estimated.
+  -->
+
+  <div id="app">
+    <!-- Rendered by ui.js -->
+    <noscript>
+      <div style="max-width:600px;margin:80px auto;padding:32px;font-family:sans-serif;text-align:center;">
+        <h2>JavaScript Required</h2>
+        <p style="margin-top:12px;color:#57606a;">
+          BizHealth AI requires JavaScript to run. All processing happens locally in your
+          browser — no data is sent to a server. Please enable JavaScript to continue.
+        </p>
+      </div>
+    </noscript>
+  </div>
+
+  <!-- Load modules in dependency order -->
+  <script src="js/parser.js"></script>
+  <script src="js/categorizer.js"></script>
+  <script src="js/pnl.js"></script>
+  <script src="js/trends.js"></script>
+  <script src="js/suggestions.js"></script>
+  <script src="js/market-day.js"></script>
+  <script src="js/taxi.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Register Service Worker for offline support and PWA install
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .catch(() => { /* SW registration failed — app still works online */ });
+      });
+    }
+
+    // Handle manifest shortcut deep-links: ?view=marketday / ?view=taxi
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const view   = params.get('view');
+      if (view && ['marketday', 'taxi', 'upload', 'history', 'rules', 'settings'].includes(view)) {
+        // Delay until App.init() has run (it fires on DOMContentLoaded too)
+        setTimeout(() => { if (typeof App !== 'undefined') App.navigate(view); }, 0);
+      }
+    });
+  </script>
+</body>
+</html>
